@@ -13,7 +13,7 @@ import re
 
 # from tagger.deepbooru import re_special as tag_escape_pattern
 
-re_special = re.compile(r'([\\()])')
+tag_escape_pattern = re.compile(r'([\\()])')
 
 # i'm not sure if it's okay to add this file to the repository
 import tagger.dbimutils as dbimutils
