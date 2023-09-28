@@ -2,8 +2,6 @@ pandas==2.1.1
 huggingface-hub==0.17.3
 torch==2.0.1
 Pillow==10.0.1
-# tensorflow==2.14.0
-# tensorflow-io==0.34.0
 deepdanbooru==1.0.2
 onnxruntime==1.16.0
 opencv-python==4.8.0.76
