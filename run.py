@@ -1,6 +1,6 @@
 
 
-from tagger.interrogator import WaifuDiffusionInterrogator
+from tagger.interrogator import Interrogator, WaifuDiffusionInterrogator
 from PIL import Image
 
 interrogator = WaifuDiffusionInterrogator(
@@ -11,11 +11,10 @@ interrogator = WaifuDiffusionInterrogator(
 
 im = Image.open("image.jpg")
 result = interrogator.interrogate(im)
+tags = Interrogator.postprocess_tags(result[1])
 print()
 
-for k, v in result[1].items():
-    if v > 0.25:
-        print(k, v)
-
+for k, v in tags.items():
+    print(k, v)
 print(result[0])
 

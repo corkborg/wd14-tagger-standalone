@@ -1,5 +1,4 @@
 import os
-import gc
 import pandas as pd
 import numpy as np
 
