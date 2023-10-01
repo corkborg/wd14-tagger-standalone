@@ -1,7 +1,9 @@
 
 
+import sys
 from tagger.interrogator import Interrogator, WaifuDiffusionInterrogator
 from PIL import Image
+from pathlib import Path
 
 interrogator = WaifuDiffusionInterrogator(
     'wd14-convnextv2-v2',
@@ -9,9 +11,11 @@ interrogator = WaifuDiffusionInterrogator(
     revision='v2.0'
 )
 
-im = Image.open("image.jpg")
+image_path = Path(sys.argv[1])
+
+im = Image.open(image_path)
 result = interrogator.interrogate(im)
-tags = Interrogator.postprocess_tags(result[1])
+tags = Interrogator.postprocess_tags(result[1], threshold=0.35)
 print()
 
 for k, v in tags.items():

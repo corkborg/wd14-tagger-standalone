@@ -10,16 +10,11 @@ from pathlib import Path
 from huggingface_hub import hf_hub_download
 import re
 
-# from tagger.deepbooru import re_special as tag_escape_pattern
-
 tag_escape_pattern = re.compile(r'([\\()])')
 
-# i'm not sure if it's okay to add this file to the repository
 import tagger.dbimutils as dbimutils
 
-# select a device to process
 use_cpu = True
-
 if use_cpu:
     tf_device_name = '/cpu:0'
 else:
@@ -29,7 +24,6 @@ class Interrogator:
     @staticmethod
     def postprocess_tags(
         tags: Dict[str, float],
-
         threshold=0.35,
         additional_tags: List[str] = [],
         exclude_tags: List[str] = [],
