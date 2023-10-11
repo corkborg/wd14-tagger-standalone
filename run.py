@@ -4,21 +4,54 @@ import sys
 from tagger.interrogator import Interrogator, WaifuDiffusionInterrogator
 from PIL import Image
 from pathlib import Path
+import argparse
 
+parser = argparse.ArgumentParser()
+
+group = parser.add_mutually_exclusive_group()
+group.add_argument('--dir', help='ディレクトリ内の画像すべてに予測を行う')
+group.add_argument('--file', help='ファイルに対して予測を行う')
+
+parser.add_argument(
+    '--threthold',
+    type=float,
+    default=0.35,
+    help='予測値の足切り確率（デフォルトは0.35）')
+parser.add_argument(
+    '--ext',
+    default='.txt',
+    help='dirの場合にキャプションファイルにつける拡張子')
+
+
+args = parser.parse_args()
+
+# 使用するモデル
 interrogator = WaifuDiffusionInterrogator(
     'wd14-convnextv2-v2',
     repo_id='SmilingWolf/wd-v1-4-convnextv2-tagger-v2',
     revision='v2.0'
 )
 
-image_path = Path(sys.argv[1])
+def image_interrogate(image_path: Path):
+    """
+    画像パスから予測を行う
+    """
+    im = Image.open(image_path)
+    result = interrogator.interrogate(im)
+    return Interrogator.postprocess_tags(result[1], threshold=0.35)
 
-im = Image.open(image_path)
-result = interrogator.interrogate(im)
-tags = Interrogator.postprocess_tags(result[1], threshold=0.35)
-print()
+if args.dir:
+    d = Path(args.dir)
+    for f in d.iterdir():
+        tags = image_interrogate(Path(f))
 
-for k, v in tags.items():
-    print(k, v)
-print(result[0])
+        tags_str = ", ".join(tags.keys())
+        with open(f.parent / f"{f.stem}{args.ext}", "w") as fp:
+            fp.write(tags_str)
+
+if args.file:
+    tags = image_interrogate(Path(args.file))
+    tags_str = ", ".join(tags.keys())
+    print(tags_str)
+
 
