@@ -43,14 +43,18 @@ def image_interrogate(image_path: Path):
 if args.dir:
     d = Path(args.dir)
     for f in d.iterdir():
-        tags = image_interrogate(Path(f))
-
+        if not f.is_file() or f.suffix not in ['.png', '.jpg', '.webp']:
+            continue
+        image_path = Path(f)
+        print('processing:', image_path)
+        tags = image_interrogate(image_path)
         tags_str = ", ".join(tags.keys())
         with open(f.parent / f"{f.stem}{args.ext}", "w") as fp:
             fp.write(tags_str)
 
 if args.file:
     tags = image_interrogate(Path(args.file))
+    print()
     tags_str = ", ".join(tags.keys())
     print(tags_str)
 
