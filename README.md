@@ -13,14 +13,14 @@ pip install -r requirements.txt
 ## usage
 
 ```
-usage: run.py [-h] (--dir DIR | --file FILE) [--threthold THRETHOLD] [--ext EXT]
+usage: run.py [-h] (--dir DIR | --file FILE) [--threshold THRETHOLD] [--ext EXT]
               [--model {wd14-vit.v1,wd14-vit.v2,wd14-convnext.v1,wd14-convnext.v2,wd14-convnextv2.v1,wd14-swinv2-v1,wd-v1-4-moat-tagger.v2,mld-caformer.dec-5-97527,mld-tresnetd.6-30000}]
 
 options:
   -h, --help            show this help message and exit
   --dir DIR             ディレクトリ内の画像すべてに予測を行う
   --file FILE           ファイルに対して予測を行う
-  --threthold THRETHOLD
+  --threshold THRETHOLD
                         予測値の足切り確率（デフォルトは0.35）
   --ext EXT             dirの場合にキャプションファイルにつける拡張子
   --model {wd14-vit.v1,wd14-vit.v2,wd14-convnext.v1,wd14-convnext.v2,wd14-convnextv2.v1,wd14-swinv2-v1,wd-v1-4-moat-tagger.v2,mld-caformer.dec-5-97527,mld-tresnetd.6-30000}

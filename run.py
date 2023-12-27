@@ -15,7 +15,7 @@ group.add_argument('--dir', help='ディレクトリ内の画像すべてに予�
 group.add_argument('--file', help='ファイルに対して予測を行う')
 
 parser.add_argument(
-    '--threthold',
+    '--threshold',
     type=float,
     default=0.35,
     help='予測値の足切り確率（デフォルトは0.35）')
@@ -40,7 +40,7 @@ def image_interrogate(image_path: Path):
     """
     im = Image.open(image_path)
     result = interrogator.interrogate(im)
-    return Interrogator.postprocess_tags(result[1], threshold=0.35)
+    return Interrogator.postprocess_tags(result[1], threshold=args.threshold)
 
 if args.dir:
     d = Path(args.dir)
