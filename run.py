@@ -6,9 +6,11 @@ from PIL import Image
 from pathlib import Path
 import argparse
 
+from tagger.interrogators import interrogators
+
 parser = argparse.ArgumentParser()
 
-group = parser.add_mutually_exclusive_group()
+group = parser.add_mutually_exclusive_group(required=True)
 group.add_argument('--dir', help='ディレクトリ内の画像すべてに予測を行う')
 group.add_argument('--file', help='ファイルに対して予測を行う')
 
@@ -21,16 +23,16 @@ parser.add_argument(
     '--ext',
     default='.txt',
     help='dirの場合にキャプションファイルにつける拡張子')
-
+parser.add_argument(
+    '--model',
+    default='wd14-convnextv2.v1',
+    choices=list(interrogators.keys()),
+    help='予測に使用するモデル名')
 
 args = parser.parse_args()
 
-# 使用するモデル
-interrogator = WaifuDiffusionInterrogator(
-    'wd14-convnextv2-v2',
-    repo_id='SmilingWolf/wd-v1-4-convnextv2-tagger-v2',
-    revision='v2.0'
-)
+# 使用するinterrogatorを読み出す
+interrogator = interrogators[args.model]
 
 def image_interrogate(image_path: Path):
     """

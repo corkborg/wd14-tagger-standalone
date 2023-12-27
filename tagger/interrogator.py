@@ -9,16 +9,15 @@ from PIL import Image
 from pathlib import Path
 from huggingface_hub import hf_hub_download
 import re
+import json
+
+from numpy import asarray, float32, expand_dims, exp
 
 tag_escape_pattern = re.compile(r'([\\()])')
 
 import tagger.dbimutils as dbimutils
 
 use_cpu = True
-if use_cpu:
-    tf_device_name = '/cpu:0'
-else:
-    tf_device_name = '/gpu:0'
 
 class Interrogator:
     @staticmethod
@@ -187,3 +186,79 @@ class WaifuDiffusionInterrogator(Interrogator):
         tags = dict(tags[4:].values)
 
         return ratings, tags
+
+class MLDanbooruInterrogator(Interrogator):
+    """ Interrogator for the MLDanbooru model. """
+    def __init__(
+        self,
+        name: str,
+        repo_id: str,
+        model_path: str,
+        tags_path='classes.json',
+    ) -> None:
+        super().__init__(name)
+        self.model_path = model_path
+        self.tags_path = tags_path
+        self.repo_id = repo_id
+        self.tags = None
+        self.model = None
+
+    def download(self) -> Tuple[str, str]:
+        print(f"Loading {self.name} model file from {self.repo_id}")
+
+        model_path = hf_hub_download(
+            repo_id=self.repo_id,
+            filename=self.model_path
+        )
+        tags_path = hf_hub_download(
+            repo_id=self.repo_id,
+            filename=self.tags_path,
+        )
+        return model_path, tags_path
+
+    def load(self) -> None:
+        model_path, tags_path = self.download()
+
+        from onnxruntime import InferenceSession
+        providers = ['CUDAExecutionProvider', 'CPUExecutionProvider']
+        if use_cpu:
+            providers.pop(0)
+        self.model = InferenceSession(model_path,
+                                          providers=providers)
+        print(f'Loaded {self.name} model from {model_path}')
+
+        with open(tags_path, 'r', encoding='utf-8') as filen:
+            self.tags = json.load(filen)
+
+    def interrogate(
+        self,
+        image: Image
+    ) -> Tuple[
+        Dict[str, float],  # rating confidents
+        Dict[str, float]  # tag confidents
+    ]:
+        # init model
+        if self.model is None:
+            self.load()
+
+        image = dbimutils.fill_transparent(image)
+        image = dbimutils.resize(image, 448)  # TODO CUSTOMIZE
+
+        x = asarray(image, dtype=float32) / 255
+        # HWC -> 1CHW
+        x = x.transpose((2, 0, 1))
+        x = expand_dims(x, 0)
+
+        input_ = self.model.get_inputs()[0]
+        output = self.model.get_outputs()[0]
+        # evaluate model
+        y, = self.model.run([output.name], {input_.name: x})
+
+        # Softmax
+        y = 1 / (1 + exp(-y))
+
+        tags = {tag: float(conf) for tag, conf in zip(self.tags, y.flatten())}
+        return {}, tags
+
+    def large_batch_interrogate(self, images: List, dry_run=False) -> str:
+        raise NotImplementedError()

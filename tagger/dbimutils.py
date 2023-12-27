@@ -4,6 +4,26 @@ import cv2
 import numpy as np
 from PIL import Image
 
+def fill_transparent(image: Image.Image, color='WHITE'):
+    image = image.convert('RGBA')
+    new_image = Image.new('RGBA', image.size, color)
+    new_image.paste(image, mask=image)
+    image = new_image.convert('RGB')
+    return image
+
+def resize(pic: Image.Image, size: int, keep_ratio=True) -> Image.Image:
+    if not keep_ratio:
+        target_size = (size, size)
+    else:
+        min_edge = min(pic.size)
+        target_size = (
+            int(pic.size[0] / min_edge * size),
+            int(pic.size[1] / min_edge * size),
+        )
+
+    target_size = (target_size[0] & ~3, target_size[1] & ~3)
+
+    return pic.resize(target_size, resample=Image.Resampling.LANCZOS)
 
 def smart_imread(img, flag=cv2.IMREAD_UNCHANGED):
     if img.endswith(".gif"):
