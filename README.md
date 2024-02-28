@@ -1,5 +1,5 @@
 
-forked from [https://github.com/picobyte/stable-diffusion-webui-wd14-tagger]()
+forked from [https://github.com/picobyte/stable-diffusion-webui-wd14-tagger](https://github.com/picobyte/stable-diffusion-webui-wd14-tagger)
 
 
 ## install
