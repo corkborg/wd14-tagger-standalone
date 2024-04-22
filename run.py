@@ -1,6 +1,8 @@
 
 
 import sys
+
+from sympy import use
 from tagger.interrogator import Interrogator, WaifuDiffusionInterrogator
 from PIL import Image
 from pathlib import Path
@@ -28,6 +30,10 @@ parser.add_argument(
     action='store_true',
     help='Overwrite the file if it exists')
 parser.add_argument(
+    '--gpu',
+    action='store_true',
+    help='Use GPU (Compatible CUDA and cuDNN required)')
+parser.add_argument(
     '--model',
     default='wd14-convnextv2.v1',
     choices=list(interrogators.keys()),
@@ -36,6 +42,9 @@ args = parser.parse_args()
 
 # get interrogator configs
 interrogator = interrogators[args.model]
+
+if args.gpu:
+    interrogator.use_gpu()
 
 def image_interrogate(image_path: Path):
     """
