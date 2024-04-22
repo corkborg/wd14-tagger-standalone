@@ -11,32 +11,36 @@ from tagger.interrogators import interrogators
 parser = argparse.ArgumentParser()
 
 group = parser.add_mutually_exclusive_group(required=True)
-group.add_argument('--dir', help='ディレクトリ内の画像すべてに予測を行う')
-group.add_argument('--file', help='ファイルに対して予測を行う')
+group.add_argument('--dir', help='Predictions for all images in the directory')
+group.add_argument('--file', help='Predictions for one file')
 
 parser.add_argument(
     '--threshold',
     type=float,
     default=0.35,
-    help='予測値の足切り確率（デフォルトは0.35）')
+    help='Prediction threshold (default is 0.35)')
 parser.add_argument(
     '--ext',
     default='.txt',
-    help='dirの場合にキャプションファイルにつける拡張子')
+    help='Extension to add to caption file in case of dir option (default is .txt)')
 parser.add_argument(
     '--model',
     default='wd14-convnextv2.v1',
     choices=list(interrogators.keys()),
-    help='予測に使用するモデル名')
-
+    help='modelname to use for prediction (default is wd14-convnextv2.v1)')
+parser.add_argument(
+    '--overwrite',
+    default=True,
+    type=bool,
+    help='Overwrite the file if it exists (default is True)')
 args = parser.parse_args()
 
-# 使用するinterrogatorを読み出す
+# get interrogator configs
 interrogator = interrogators[args.model]
 
 def image_interrogate(image_path: Path):
     """
-    画像パスから予測を行う
+    Predictions from a image path
     """
     im = Image.open(image_path)
     result = interrogator.interrogate(im)
@@ -45,7 +49,7 @@ def image_interrogate(image_path: Path):
 if args.dir:
     d = Path(args.dir)
     for f in d.iterdir():
-        if not f.is_file() or f.suffix not in ['.png', '.jpg', '.webp']:
+        if not f.is_file() or f.suffix not in ['.png', '.jpg', '.jpeg', '.webp']:
             continue
         image_path = Path(f)
         print('processing:', image_path)
