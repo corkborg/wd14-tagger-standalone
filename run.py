@@ -24,15 +24,14 @@ parser.add_argument(
     default='.txt',
     help='Extension to add to caption file in case of dir option (default is .txt)')
 parser.add_argument(
+    '--overwrite',
+    action='store_true',
+    help='Overwrite the file if it exists')
+parser.add_argument(
     '--model',
     default='wd14-convnextv2.v1',
     choices=list(interrogators.keys()),
     help='modelname to use for prediction (default is wd14-convnextv2.v1)')
-parser.add_argument(
-    '--overwrite',
-    default=True,
-    type=bool,
-    help='Overwrite the file if it exists (default is True)')
 args = parser.parse_args()
 
 # get interrogator configs
@@ -51,11 +50,20 @@ if args.dir:
     for f in d.iterdir():
         if not f.is_file() or f.suffix not in ['.png', '.jpg', '.jpeg', '.webp']:
             continue
+
         image_path = Path(f)
+        caption_path = image_path.parent / f"{f.stem}{args.ext}"
+
+        if  caption_path.is_file() and not args.overwrite:
+            # skip if file exists
+            print('skip:', image_path)
+            continue
+
         print('processing:', image_path)
         tags = image_interrogate(image_path)
         tags_str = ", ".join(tags.keys())
-        with open(f.parent / f"{f.stem}{args.ext}", "w") as fp:
+
+        with open(caption_path, "w") as fp:
             fp.write(tags_str)
 
 if args.file:
