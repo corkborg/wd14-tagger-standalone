@@ -23,7 +23,7 @@ parser.add_argument(
 parser.add_argument(
     '--overwrite',
     action='store_true',
-    help='Overwrite the file if it exists')
+    help='Overwrite caption file if it exists')
 parser.add_argument(
     '--cpu',
     action='store_true',

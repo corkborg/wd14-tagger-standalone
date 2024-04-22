@@ -13,8 +13,7 @@ pip install -r requirements.txt
 ## usage
 
 ```
-usage: run.py [-h] (--dir DIR | --file FILE) [--threshold THRESHOLD] [--ext EXT] [--overwrite] [--gpu]
-              [--model {wd14-vit.v1,wd14-vit.v2,wd14-convnext.v1,wd14-convnext.v2,wd14-convnextv2.v1,wd14-swinv2-v1,wd-v1-4-moat-tagger.v2,mld-caformer.dec-5-97527,mld-tresnetd.6-30000}]
+usage: run.py [-h] (--dir DIR | --file FILE) [--threshold THRESHOLD] [--ext EXT] [--overwrite] [--cpu] [--model {wd14-vit.v1,wd14-vit.v2,wd14-convnext.v1,wd14-convnext.v2,wd14-convnextv2.v1,wd14-swinv2-v1,wd-v1-4-moat-tagger.v2,mld-caformer.dec-5-97527,mld-tresnetd.6-30000}]
 
 options:
   -h, --help            show this help message and exit
@@ -23,7 +22,7 @@ options:
   --threshold THRESHOLD
                         Prediction threshold (default is 0.35)
   --ext EXT             Extension to add to caption file in case of dir option (default is .txt)
-  --overwrite           Overwrite the file if it exists
+  --overwrite           Overwrite caption file if it exists
   --cpu                 Use CPU only
   --model {wd14-vit.v1,wd14-vit.v2,wd14-convnext.v1,wd14-convnext.v2,wd14-convnextv2.v1,wd14-swinv2-v1,wd-v1-4-moat-tagger.v2,mld-caformer.dec-5-97527,mld-tresnetd.6-30000}
                         modelname to use for prediction (default is wd14-convnextv2.v1)
