@@ -72,7 +72,7 @@ class Interrogator:
 
     def __init__(self, name: str) -> None:
         self.name = name
-        self.providers = ['CPUExecutionProvider']
+        self.providers = ['CUDAExecutionProvider', 'CPUExecutionProvider']
 
     def load(self):
         raise NotImplementedError()
@@ -90,8 +90,8 @@ class Interrogator:
 
         return unloaded
 
-    def use_gpu(self) -> None:
-        self.providers = ['CUDAExecutionProvider']
+    def use_cpu(self) -> None:
+        self.providers = ['CPUExecutionProvider']
 
     def interrogate(
         self,
