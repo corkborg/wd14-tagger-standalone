@@ -114,7 +114,6 @@ class WaifuDiffusionInterrogator(Interrogator):
         self.model_path = model_path
         self.tags_path = tags_path
         self.kwargs = kwargs
-        self.use_cpu = True
 
     def download(self) -> Tuple[os.PathLike, os.PathLike]:
         print(f"Loading {self.name} model file from {self.kwargs['repo_id']}")
@@ -199,7 +198,6 @@ class MLDanbooruInterrogator(Interrogator):
         self.repo_id = repo_id
         self.tags = None
         self.model = None
-        self.use_cpu = False
 
     def download(self) -> Tuple[str, str]:
         print(f"Loading {self.name} model file from {self.repo_id}")
