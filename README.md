@@ -55,7 +55,7 @@ python run.py --file image.jpg --model mld-caformer.dec-5-97527
 python run.py --file image.jpg --model mld-tresnetd.6-30000
 ```
 
-## Use GPU
+## Using GPU
 
 Requires CUDA 12.2 and cuDNN8.x.
 
