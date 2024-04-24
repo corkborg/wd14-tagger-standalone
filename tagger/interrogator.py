@@ -17,7 +17,6 @@ tag_escape_pattern = re.compile(r'([\\()])')
 
 import tagger.dbimutils as dbimutils
 
-use_cpu = True
 
 class Interrogator:
     @staticmethod
@@ -73,6 +72,7 @@ class Interrogator:
 
     def __init__(self, name: str) -> None:
         self.name = name
+        self.providers = ['CUDAExecutionProvider', 'CPUExecutionProvider']
 
     def load(self):
         raise NotImplementedError()
@@ -89,6 +89,9 @@ class Interrogator:
             del self.tags
 
         return unloaded
+
+    def use_cpu(self) -> None:
+        self.providers = ['CPUExecutionProvider']
 
     def interrogate(
         self,
@@ -125,14 +128,7 @@ class WaifuDiffusionInterrogator(Interrogator):
         model_path, tags_path = self.download()
 
         from onnxruntime import InferenceSession
-
-        # https://onnxruntime.ai/docs/execution-providers/
-        # https://github.com/toriato/stable-diffusion-webui-wd14-tagger/commit/e4ec460122cf674bbf984df30cdb10b4370c1224#r92654958
-        providers = ['CUDAExecutionProvider', 'CPUExecutionProvider']
-        if use_cpu:
-            providers.pop(0)
-
-        self.model = InferenceSession(str(model_path), providers=providers)
+        self.model = InferenceSession(str(model_path), providers=self.providers)
 
         print(f'Loaded {self.name} model from {model_path}')
 
@@ -220,11 +216,8 @@ class MLDanbooruInterrogator(Interrogator):
         model_path, tags_path = self.download()
 
         from onnxruntime import InferenceSession
-        providers = ['CUDAExecutionProvider', 'CPUExecutionProvider']
-        if use_cpu:
-            providers.pop(0)
         self.model = InferenceSession(model_path,
-                                          providers=providers)
+                                        providers=self.providers)
         print(f'Loaded {self.name} model from {model_path}')
 
         with open(tags_path, 'r', encoding='utf-8') as filen:

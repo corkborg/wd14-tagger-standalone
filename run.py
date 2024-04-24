@@ -1,6 +1,3 @@
-
-
-import sys
 from tagger.interrogator import Interrogator, WaifuDiffusionInterrogator
 from PIL import Image
 from pathlib import Path
@@ -26,7 +23,11 @@ parser.add_argument(
 parser.add_argument(
     '--overwrite',
     action='store_true',
-    help='Overwrite the file if it exists')
+    help='Overwrite caption file if it exists')
+parser.add_argument(
+    '--cpu',
+    action='store_true',
+    help='Use CPU only')
 parser.add_argument(
     '--model',
     default='wd14-convnextv2.v1',
@@ -36,6 +37,9 @@ args = parser.parse_args()
 
 # get interrogator configs
 interrogator = interrogators[args.model]
+
+if args.cpu:
+    interrogator.use_cpu()
 
 def image_interrogate(image_path: Path):
     """
@@ -63,7 +67,7 @@ if args.dir:
         tags = image_interrogate(image_path)
         tags_str = ", ".join(tags.keys())
 
-        with open(caption_path, "w") as fp:
+        with open(caption_path, 'w') as fp:
             fp.write(tags_str)
 
 if args.file:
