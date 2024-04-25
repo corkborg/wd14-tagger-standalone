@@ -64,3 +64,7 @@ pip install onnxruntime-gpu --extra-index-url https://aiinfra.pkgs.visualstudio.
 
 https://onnxruntime.ai/docs/install/
 https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html#requirements
+
+## Copyright
+
+Public domain, except borrowed parts (e.g. `dbimutils.py`)
