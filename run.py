@@ -29,6 +29,10 @@ parser.add_argument(
     action='store_true',
     help='Use CPU only')
 parser.add_argument(
+    '--rawtag',
+    action='store_true',
+    help='Use the raw output of the model')
+parser.add_argument(
     '--model',
     default='wd14-convnextv2.v1',
     choices=list(interrogators.keys()),
@@ -47,7 +51,10 @@ def image_interrogate(image_path: Path):
     """
     im = Image.open(image_path)
     result = interrogator.interrogate(im)
-    return Interrogator.postprocess_tags(result[1], threshold=args.threshold)
+
+    if args.rawtag:
+        return Interrogator.postprocess_tags(result[1], threshold=args.threshold)
+    return Interrogator.postprocess_tags(result[1], threshold=args.threshold, escape_tag=True, replace_underscore=True)
 
 if args.dir:
     d = Path(args.dir)
@@ -56,7 +63,7 @@ if args.dir:
             continue
 
         image_path = Path(f)
-        caption_path = image_path.parent / f"{f.stem}{args.ext}"
+        caption_path = image_path.parent / f'{f.stem}{args.ext}'
 
         if  caption_path.is_file() and not args.overwrite:
             # skip if file exists
@@ -65,7 +72,8 @@ if args.dir:
 
         print('processing:', image_path)
         tags = image_interrogate(image_path)
-        tags_str = ", ".join(tags.keys())
+
+        tags_str = ', '.join(tags.keys())
 
         with open(caption_path, 'w') as fp:
             fp.write(tags_str)
@@ -73,7 +81,7 @@ if args.dir:
 if args.file:
     tags = image_interrogate(Path(args.file))
     print()
-    tags_str = ", ".join(tags.keys())
+    tags_str = ', '.join(tags.keys())
     print(tags_str)
 
 
