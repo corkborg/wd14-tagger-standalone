@@ -69,9 +69,11 @@ def make_square(img: np.ndarray, target_size: int):
 def smart_resize(img: np.ndarray, size):
     img_pil = Image.fromarray(img)
     if max(img_pil.size) > size:
+        # TODO: cv2.INTER_AREA is not available in PIL
         img_resized = img_pil.resize((size, size), Image.LANCZOS)
         return img_resized
     elif max(img_pil.size) < size:
+        # TODO: cv2.INTER_AREA is not available in PIL
         img_resized = img_pil.resize((size, size), Image.BICUBIC)
     else:
         img_resized = img_pil
