@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import numpy as np
 
-from typing import Tuple, List, Dict
+from typing import Iterable, Tuple, List, Dict
 from io import BytesIO
 from PIL import Image
 
@@ -24,7 +24,7 @@ class Interrogator:
         tags: Dict[str, float],
         threshold=0.35,
         additional_tags: List[str] = [],
-        exclude_tags: List[str] = [],
+        exclude_tags: Iterable[str] = [],
         sort_by_alphabetical_order=False,
         add_confident_as_weight=False,
         replace_underscore=False,
@@ -95,7 +95,7 @@ class Interrogator:
 
     def interrogate(
         self,
-        image: Image
+        image: Image.Image
     ) -> Tuple[
         Dict[str, float],  # rating confidents
         Dict[str, float]  # tag confidents
@@ -136,7 +136,7 @@ class WaifuDiffusionInterrogator(Interrogator):
 
     def interrogate(
         self,
-        image: Image
+        image: Image.Image
     ) -> Tuple[
         Dict[str, float],  # rating confidents
         Dict[str, float]  # tag confidents
