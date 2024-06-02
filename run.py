@@ -1,4 +1,5 @@
-from tagger.interrogator import Interrogator, WaifuDiffusionInterrogator
+from typing import Generator
+from tagger.interrogator import Interrogator
 from PIL import Image
 from pathlib import Path
 import argparse
@@ -33,6 +34,10 @@ parser.add_argument(
     action='store_true',
     help='Use the raw output of the model')
 parser.add_argument(
+    '--recursive',
+    action='store_true',
+    help='Enable recursive file search')
+parser.add_argument(
     '--model',
     default='wd14-convnextv2.v1',
     choices=list(interrogators.keys()),
@@ -56,17 +61,23 @@ def image_interrogate(image_path: Path):
         return Interrogator.postprocess_tags(result[1], threshold=args.threshold)
     return Interrogator.postprocess_tags(result[1], threshold=args.threshold, escape_tag=True, replace_underscore=True)
 
+def explore_image_files(folder_path: Path) -> Generator[Path, None, None]:
+    """
+    Explore files by folder path
+    """
+    for path in folder_path.iterdir():
+        if path.is_file() and path.suffix in ['.png', '.jpg', '.jpeg', '.webp']:
+            yield path
+        elif args.recursive and path.is_dir():
+            yield from explore_image_files(path)
+
 if args.dir:
-    d = Path(args.dir)
-    for f in d.iterdir():
-        if not f.is_file() or f.suffix not in ['.png', '.jpg', '.jpeg', '.webp']:
-            continue
+    root_path = Path(args.dir)
+    for image_path in explore_image_files(root_path):
+        caption_path = image_path.parent / f'{image_path.stem}{args.ext}'
 
-        image_path = Path(f)
-        caption_path = image_path.parent / f'{f.stem}{args.ext}'
-
-        if  caption_path.is_file() and not args.overwrite:
-            # skip if file exists
+        if caption_path.is_file() and not args.overwrite:
+            # skip if caption exists
             print('skip:', image_path)
             continue
 
