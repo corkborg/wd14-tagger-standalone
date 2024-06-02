@@ -27,7 +27,7 @@ options:
   --rawtag              Use the raw output of the model
   --recursive           Enable recursive file search
   --model {wd14-vit.v1,wd14-vit.v2,wd14-convnext.v1,wd14-convnext.v2,wd14-convnextv2.v1,wd14-swinv2-v1,wd-v1-4-moat-tagger.v2,wd-v1-4-vit-tagger.v3,wd-v1-4-convnext-tagger.v3,wd-v1-4-swinv2-tagger.v3,mld-caformer.dec-5-97527,mld-tresnetd.6-30000}
-                        modelname to use for prediction (default is wd14-convnextv2.v1)
+                        modelname to use for prediction (default is wd-v1-4-convnext-tagger.v3)
 ```
 
 single file

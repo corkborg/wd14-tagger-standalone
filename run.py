@@ -39,9 +39,9 @@ parser.add_argument(
     help='Enable recursive file search')
 parser.add_argument(
     '--model',
-    default='wd14-convnextv2.v1',
+    default='wd-v1-4-convnext-tagger.v3',
     choices=list(interrogators.keys()),
-    help='modelname to use for prediction (default is wd14-convnextv2.v1)')
+    help='modelname to use for prediction (default is wd-v1-4-convnext-tagger.v3)')
 args = parser.parse_args()
 
 # get interrogator configs
