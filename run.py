@@ -1,4 +1,4 @@
-from typing import Generator
+from typing import Generator, Iterable
 from tagger.interrogator import Interrogator
 from PIL import Image
 from pathlib import Path
@@ -38,6 +38,12 @@ parser.add_argument(
     action='store_true',
     help='Enable recursive file search')
 parser.add_argument(
+    '--exclude-tag',
+    dest='exclude_tags',
+    action='append',
+    metavar='t1,t2,t3',
+    help='Specify tags to exclude (Need comma-separated list)')
+parser.add_argument(
     '--model',
     default='wd14-convnextv2.v1',
     choices=list(interrogators.keys()),
@@ -50,16 +56,35 @@ interrogator = interrogators[args.model]
 if args.cpu:
     interrogator.use_cpu()
 
-def image_interrogate(image_path: Path):
+def parse_exclude_tags() -> set[str]:
+    if args.exclude_tags is None:
+        return set()
+
+    tags = []
+    for str in args.exclude_tags:
+        for tag in str.split(','):
+            tags.append(tag.strip())
+
+    # reverse escape (nai tag to danbooru tag)
+    reverse_escaped_tags = []
+    for tag in tags:
+        tag = tag.replace(' ', '_').replace('\(', '(').replace('\)', ')')
+        reverse_escaped_tags.append(tag)
+    return set([*tags, *reverse_escaped_tags])  # reduce duplicates
+
+def image_interrogate(image_path: Path, tag_escape: bool, exclude_tags: Iterable[str]) -> dict[str, float]:
     """
     Predictions from a image path
     """
     im = Image.open(image_path)
     result = interrogator.interrogate(im)
 
-    if args.rawtag:
-        return Interrogator.postprocess_tags(result[1], threshold=args.threshold)
-    return Interrogator.postprocess_tags(result[1], threshold=args.threshold, escape_tag=True, replace_underscore=True)
+    return Interrogator.postprocess_tags(
+        result[1],
+        threshold=args.threshold,
+        escape_tag=tag_escape,
+        replace_underscore=tag_escape,
+        exclude_tags=exclude_tags)
 
 def explore_image_files(folder_path: Path) -> Generator[Path, None, None]:
     """
@@ -82,7 +107,7 @@ if args.dir:
             continue
 
         print('processing:', image_path)
-        tags = image_interrogate(image_path)
+        tags = image_interrogate(image_path, not args.rawtag, parse_exclude_tags())
 
         tags_str = ', '.join(tags.keys())
 
@@ -90,7 +115,7 @@ if args.dir:
             fp.write(tags_str)
 
 if args.file:
-    tags = image_interrogate(Path(args.file))
+    tags = image_interrogate(Path(args.file), not args.rawtag, parse_exclude_tags())
     print()
     tags_str = ', '.join(tags.keys())
     print(tags_str)

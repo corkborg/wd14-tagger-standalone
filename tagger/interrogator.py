@@ -2,8 +2,7 @@ import os
 import pandas as pd
 import numpy as np
 
-from typing import Tuple, List, Dict
-from io import BytesIO
+from typing import Iterable, Tuple, List, Dict
 from PIL import Image
 
 from pathlib import Path
@@ -24,7 +23,7 @@ class Interrogator:
         tags: Dict[str, float],
         threshold=0.35,
         additional_tags: List[str] = [],
-        exclude_tags: List[str] = [],
+        exclude_tags: Iterable[str] = [],
         sort_by_alphabetical_order=False,
         add_confident_as_weight=False,
         replace_underscore=False,
