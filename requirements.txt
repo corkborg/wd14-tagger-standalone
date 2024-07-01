@@ -3,4 +3,5 @@ huggingface-hub==0.22.2
 Pillow==10.0.1
 deepdanbooru==1.0.2
 onnxruntime==1.17.3
+numpy==1.26.4
 opencv-python==4.9.0.80
