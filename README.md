@@ -47,16 +47,27 @@ python run.py --dir dir/dir
 ## Support Models
 
 ```
-python run.py --file image.jpg --model wd14-vit.v1
-python run.py --file image.jpg --model wd14-vit.v2
-python run.py --file image.jpg --model wd14-convnext.v1
-python run.py --file image.jpg --model wd14-convnext.v2
-python run.py --file image.jpg --model wd14-convnextv2.v1
-python run.py --file image.jpg --model wd14-swinv2-v1
-python run.py --file image.jpg --model wd-v1-4-moat-tagger.v2
+# SmilingWolf large model. (released 2024)
+python run.py --file image.jpg --model wd-vit-large-tagger-v3
+python run.py --file image.jpg --model wd-eva02-large-tagger-v3
+
+# SmilingWolf v3 model. (released 2024)
 python run.py --file image.jpg --model wd-v1-4-vit-tagger.v3
 python run.py --file image.jpg --model wd-v1-4-convnext-tagger.v3
 python run.py --file image.jpg --model wd-v1-4-swinv2-tagger.v3
+
+# SmilingWolf v2 model. (released 2023)
+python run.py --file image.jpg --model wd-v1-4-moat-tagger.v2
+python run.py --file image.jpg --model wd14-vit.v2
+python run.py --file image.jpg --model wd14-convnext.v2
+
+# SmilingWolf v1 model. (released 2022)
+python run.py --file image.jpg --model wd14-vit.v1
+python run.py --file image.jpg --model wd14-convnext.v1
+python run.py --file image.jpg --model wd14-convnextv2.v1
+python run.py --file image.jpg --model wd14-swinv2-v1
+
+# kiriyamaX model.
 python run.py --file image.jpg --model mld-caformer.dec-5-97527
 python run.py --file image.jpg --model mld-tresnetd.6-30000
 ```
