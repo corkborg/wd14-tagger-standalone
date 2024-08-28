@@ -67,6 +67,10 @@ python run.py --file image.jpg --model wd14-convnext.v1
 python run.py --file image.jpg --model wd14-convnextv2.v1
 python run.py --file image.jpg --model wd14-swinv2-v1
 
+# Z3D-E621-Convnext
+python run.py --file image.jpg --model z3d-e621-convnext-toynya
+python run.py --file image.jpg --model z3d-e621-convnext-silveroxides
+
 # kiriyamaX model.
 python run.py --file image.jpg --model mld-caformer.dec-5-97527
 python run.py --file image.jpg --model mld-tresnetd.6-30000

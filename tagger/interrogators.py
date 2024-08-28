@@ -53,6 +53,16 @@ interrogators: Dict[str, Interrogator] = {
         'WD EVA02-Large Tagger v3',
         repo_id='SmilingWolf/wd-eva02-large-tagger-v3'
     ),
+    'z3d-e621-convnext-toynya': WaifuDiffusionInterrogator(
+        'Z3D-E621-Convnext(toynya)',
+        repo_id='toynya/Z3D-E621-Convnext',
+        tags_path='tags-selected.csv'
+    ),
+    'z3d-e621-convnext-silveroxides': WaifuDiffusionInterrogator(
+        'Z3D-E621-Convnext(silveroxides)',
+        repo_id='silveroxides/Z3D-E621-Convnext',
+        tags_path='tags-selected.csv'
+    ),
     'mld-caformer.dec-5-97527': MLDanbooruInterrogator(
         'ML-Danbooru Caformer dec-5-97527',
         repo_id='deepghs/ml-danbooru-onnx',
