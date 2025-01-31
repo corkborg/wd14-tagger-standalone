@@ -78,13 +78,13 @@ python run.py --file image.jpg --model mld-tresnetd.6-30000
 
 ## Using GPU
 
-Requires CUDA 12.2 and cuDNN8.x.
+Requires CUDA 12.2 and cuDNN9.x.
 
 ```
 pip install onnxruntime-gpu --extra-index-url https://aiinfra.pkgs.visualstudio.com/PublicPackages/_packaging/onnxruntime-cuda-12/pypi/simple/
 ```
 
-https://onnxruntime.ai/docs/install/
+https://onnxruntime.ai/docs/install/</br>
 https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html#requirements
 
 ## Copyright
