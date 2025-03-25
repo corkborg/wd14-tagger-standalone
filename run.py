@@ -68,7 +68,7 @@ def parse_exclude_tags() -> set[str]:
     # reverse escape (nai tag to danbooru tag)
     reverse_escaped_tags = []
     for tag in tags:
-        tag = tag.replace(' ', '_').replace('\(', '(').replace('\)', ')')
+        tag = tag.replace(' ', '_').replace(r'\(', '(').replace(r'\)', ')')
         reverse_escaped_tags.append(tag)
     return set([*tags, *reverse_escaped_tags])  # reduce duplicates
 
