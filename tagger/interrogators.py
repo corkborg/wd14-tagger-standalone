@@ -1,6 +1,7 @@
 from tagger.interrogator.interrogator import AbsInterrogator
 from tagger.interrogator.waifudiffusioninterrogator import WaifuDiffusionInterrogator
 from tagger.interrogator.mldanbooruinterrogator import MLDanbooruInterrogator
+from tagger.interrogator.camietaggerinterrogator import CamieTaggerInterrogator
 
 interrogators: dict[str, AbsInterrogator] = {
     'wd14-vit.v1': WaifuDiffusionInterrogator(
@@ -72,5 +73,11 @@ interrogators: dict[str, AbsInterrogator] = {
         'ML-Danbooru TResNet-D 6-30000',
         repo_id='deepghs/ml-danbooru-onnx',
         model_path='TResnet-D-FLq_ema_6-30000.onnx'
+    ),
+    'camie-tagger': CamieTaggerInterrogator(
+        'Camie Tagger',
+        repo_id='Camais03/camie-tagger',
+        model_path='model_initial.onnx',
+        tags_path='model_initial_metadata.json'
     ),
 }
