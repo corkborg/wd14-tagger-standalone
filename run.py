@@ -1,5 +1,7 @@
+import sys
+
 from typing import Generator, Iterable
-from tagger.interrogator import Interrogator
+from tagger.interrogator.interrogator import AbsInterrogator
 from PIL import Image
 from pathlib import Path
 import argparse
@@ -79,7 +81,7 @@ def image_interrogate(image_path: Path, tag_escape: bool, exclude_tags: Iterable
     im = Image.open(image_path)
     result = interrogator.interrogate(im)
 
-    return Interrogator.postprocess_tags(
+    return AbsInterrogator.postprocess_tags(
         result[1],
         threshold=args.threshold,
         escape_tag=tag_escape,
@@ -116,7 +118,7 @@ if args.dir:
 
 if args.file:
     tags = image_interrogate(Path(args.file), not args.rawtag, parse_exclude_tags())
-    print()
+    print(file=sys.stderr)
     tags_str = ', '.join(tags.keys())
     print(tags_str)
 

@@ -1,8 +1,8 @@
-from typing import List, Dict
+from tagger.interrogator.interrogator import AbsInterrogator
+from tagger.interrogator.waifudiffusioninterrogator import WaifuDiffusionInterrogator
+from tagger.interrogator.mldanbooruinterrogator import MLDanbooruInterrogator
 
-from tagger.interrogator import Interrogator, WaifuDiffusionInterrogator, MLDanbooruInterrogator
-
-interrogators: Dict[str, Interrogator] = {
+interrogators: dict[str, AbsInterrogator] = {
     'wd14-vit.v1': WaifuDiffusionInterrogator(
         'WD14 ViT v1',
         repo_id='SmilingWolf/wd-v1-4-vit-tagger'
