@@ -48,7 +48,7 @@ parser.add_argument(
 parser.add_argument(
     '--model',
     default='wd14-convnextv2.v1',
-    choices=list(interrogators.keys()),
+    metavar='MODELNAME',
     help='modelname to use for prediction (default is wd14-convnextv2.v1)')
 args = parser.parse_args()
 
