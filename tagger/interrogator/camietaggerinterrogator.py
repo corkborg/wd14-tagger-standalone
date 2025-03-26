@@ -14,7 +14,7 @@ from PIL import Image
 from huggingface_hub import hf_hub_download
 from onnxruntime import InferenceSession
 
-from tagger.interrogator.interrogator import AbsInterrogator
+from tagger.interrogator import AbsInterrogator
 
 class CamieTaggerInterrogator(AbsInterrogator):
     repo_id: str

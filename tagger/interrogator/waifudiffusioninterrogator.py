@@ -1,19 +1,17 @@
 import os
 import sys
+from pathlib import Path
+from typing import cast
+
 import pandas as pd
 import numpy as np
-
-from typing import Tuple, Dict
 from PIL import Image
-
-from pathlib import Path
 from huggingface_hub import hf_hub_download
-import re
+from onnxruntime import InferenceSession
 
-tag_escape_pattern = re.compile(r'([\\()])')
-
-from tagger.interrogator.interrogator import AbsInterrogator
+from tagger.interrogator import AbsInterrogator
 import tagger.dbimutils as dbimutils
+
 
 class WaifuDiffusionInterrogator(AbsInterrogator):
     def __init__(
@@ -28,7 +26,7 @@ class WaifuDiffusionInterrogator(AbsInterrogator):
         self.tags_path = tags_path
         self.kwargs = kwargs
 
-    def download(self) -> Tuple[os.PathLike, os.PathLike]:
+    def download(self) -> tuple[os.PathLike, os.PathLike]:
         print(f"Loading {self.name} model file from {self.kwargs['repo_id']}", file=sys.stderr)
 
         model_path = Path(hf_hub_download(
@@ -40,7 +38,6 @@ class WaifuDiffusionInterrogator(AbsInterrogator):
     def load(self) -> None:
         model_path, tags_path = self.download()
 
-        from onnxruntime import InferenceSession
         self.model = InferenceSession(str(model_path), providers=self.providers)
 
         print(f'Loaded {self.name} model from {model_path}', file=sys.stderr)
@@ -57,7 +54,6 @@ class WaifuDiffusionInterrogator(AbsInterrogator):
         # init model
         if not hasattr(self, 'model') or self.model is None:
             self.load()
-
         if self.model is None:
             raise Exception("Model not loading.")
 
@@ -96,8 +92,10 @@ class WaifuDiffusionInterrogator(AbsInterrogator):
 
         # first 4 items are for rating (general, sensitive, questionable, explicit)
         ratings = dict(tags[:4].values)
+        ratings = cast(dict[str, float], ratings)
 
         # rest are regular tags
         tags = dict(tags[4:].values)
+        tags = cast(dict[str, float], tags)
 
         return ratings, tags

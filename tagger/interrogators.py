@@ -1,4 +1,4 @@
-from tagger.interrogator.interrogator import AbsInterrogator
+from tagger.interrogator import AbsInterrogator
 from tagger.interrogator.waifudiffusioninterrogator import WaifuDiffusionInterrogator
 from tagger.interrogator.mldanbooruinterrogator import MLDanbooruInterrogator
 from tagger.interrogator.camietaggerinterrogator import CamieTaggerInterrogator

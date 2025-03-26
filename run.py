@@ -1,7 +1,7 @@
 import sys
 
 from typing import Generator, Iterable
-from tagger.interrogator.interrogator import AbsInterrogator
+from tagger.interrogator import AbsInterrogator
 from PIL import Image
 from pathlib import Path
 import argparse
@@ -11,52 +11,59 @@ from tagger.interrogators import interrogators
 parser = argparse.ArgumentParser()
 
 group = parser.add_mutually_exclusive_group(required=True)
-group.add_argument('--dir', help='Predictions for all images in the directory')
-group.add_argument('--file', help='Predictions for one file')
+group.add_argument('--dir', help='Predictions for all images in the directory.')
+group.add_argument('--file', help='Predictions for one file.')
 
 parser.add_argument(
     '--threshold',
     type=float,
     default=0.35,
-    help='Prediction threshold (default is 0.35)')
+    help='Prediction threshold. (default is 0.35)')
 parser.add_argument(
     '--ext',
     default='.txt',
-    help='Extension to add to caption file in case of dir option (default is .txt)')
+    help='Extension to add to caption file in case of dir option. (default is .txt)')
 parser.add_argument(
     '--overwrite',
     action='store_true',
-    help='Overwrite caption file if it exists')
+    help='Overwrite caption file if it exists.')
 parser.add_argument(
     '--cpu',
     action='store_true',
-    help='Use CPU only')
+    help='Set execution provider to CPU only.')
+parser.add_argument(
+    '--execution-provider',
+    dest='execution_provider',
+    help='Override execution provider. (e.g CUDAExecutionProvider)')
 parser.add_argument(
     '--rawtag',
     action='store_true',
-    help='Use the raw output of the model')
+    help='Use the raw output of the model.')
 parser.add_argument(
     '--recursive',
     action='store_true',
-    help='Enable recursive file search')
+    help='Enable recursive file search.')
 parser.add_argument(
     '--exclude-tag',
     dest='exclude_tags',
     action='append',
     metavar='t1,t2,t3',
-    help='Specify tags to exclude (Need comma-separated list)')
+    help='Specify tags to exclude. (Need comma-separated list)')
 parser.add_argument(
     '--model',
     default='wd14-convnextv2.v1',
     metavar='MODELNAME',
-    help='modelname to use for prediction (default is wd14-convnextv2.v1)')
+    help='modelname to use for prediction. (default is wd14-convnextv2.v1)')
 args = parser.parse_args()
 
 # get interrogator configs
 interrogator = interrogators[args.model]
 
 if args.cpu:
-    interrogator.use_cpu()
+    interrogator.override_execution_provider(['CPUExecutionProvider'])
+
+if args.execution_provider:
+    interrogator.override_execution_provider([args.execution_provider])
 
 def parse_exclude_tags() -> set[str]:
     if args.exclude_tags is None:
@@ -121,5 +128,3 @@ if args.file:
     print(file=sys.stderr)
     tags_str = ', '.join(tags.keys())
     print(tags_str)
-
-

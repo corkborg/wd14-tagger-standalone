@@ -58,9 +58,9 @@ python run.py --model wd-v1-4-convnext-tagger.v3 --file image.jpg
 python run.py --model wd-v1-4-swinv2-tagger.v3 --file image.jpg
 
 # SmilingWolf v2 model. (released 2023)
-python run.py --model wd-v1-4-moat-tagger.v2  --file image.jpg
-python run.py --model wd14-vit.v2  --file image.jpg
-python run.py --model wd14-convnext.v2  --file image.jpg
+python run.py --model wd-v1-4-moat-tagger.v2 --file image.jpg
+python run.py --model wd14-vit.v2 --file image.jpg
+python run.py --model wd14-convnext.v2 --file image.jpg
 
 # SmilingWolf v1 model. (released 2022)
 python run.py --model wd14-vit.v1 --file image.jpg

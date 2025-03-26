@@ -6,8 +6,9 @@ from numpy import asarray, float32, expand_dims, exp
 
 from huggingface_hub import hf_hub_download
 
-from tagger.interrogator.interrogator import AbsInterrogator
+from tagger.interrogator import AbsInterrogator
 import tagger.dbimutils as dbimutils
+
 
 class MLDanbooruInterrogator(AbsInterrogator):
     """ Interrogator for the MLDanbooru model. """
@@ -59,6 +60,8 @@ class MLDanbooruInterrogator(AbsInterrogator):
         # init model
         if self.model is None:
             self.load()
+        if self.model is None:
+            raise Exception("Model not loading.")
 
         image = dbimutils.fill_transparent(image)
         image = dbimutils.resize(image, 448)  # TODO CUSTOMIZE
@@ -79,7 +82,7 @@ class MLDanbooruInterrogator(AbsInterrogator):
         if self.tags is None:
             raise Exception("Tags not loading.")
 
-        tags = {tag: float(conf) for tag, conf in zip(self.tags, y.flatten())}
+        tags = {str(tag): float(conf) for tag, conf in zip(self.tags, y.flatten())}
         return {}, tags
 
     def large_batch_interrogate(self, images: list, dry_run=False) -> str:
