@@ -97,7 +97,7 @@ class AbsInterrogator:
     def set_providers(self, providers: List[str]) -> None:
         """Set specific execution providers."""
         self.providers = providers
-        print(f'Set custom providers for {self.name}: {providers}', file=sys.stderr)
+        #print(f'Set custom providers for {self.name}: {providers}', file=sys.stderr)
 
     def get_optimal_provider(self) -> List[str]:
         """Get the optimal provider based on system capabilities.
