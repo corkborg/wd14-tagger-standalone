@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wd14-tagger-standalone"
+version = "0.1.0"
+authors = [
+  { name="Your Name", email="you@example.com" }, # TODO: Update author details
+]
+description = "Interrogate booru style tags for single or multiple image files using various models"
+readme = "README.md" # Assuming a README.md exists or will be created
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License", # Correctly reflects MIT license
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "numpy==2.2.2",
+    "pandas==2.2.3",
+    "torchvision==0.21.0",
+    "Pillow==11.1.0",
+    "huggingface-hub==0.28.1",
+    "deepdanbooru==1.0.3",
+    "onnxruntime==1.20.1",
+    "opencv-python==4.11.0.86",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/allenday/wd14-tagger-standalone" # TODO: Update if needed
+"Bug Tracker" = "https://github.com/allenday/wd14-tagger-standalone/issues" # TODO: Update if needed
+
+[project.scripts]
+danbooru-tagger = "tagger.cli:main"
+
+[tool.setuptools]
+packages = ["tagger"] # Explicitly include the 'tagger' directory as a package
+
+# Alternatively, to find packages automatically:
+# [tool.setuptools.packages.find]
+# where = ["."]  # Root directory to search
+# include = ["tagger*"]  # Include patterns
+# exclude = ["tests*"]  # Exclude patterns (optional)
+
+# If you need to include data files within the tagger package:
+# [tool.setuptools.package-data]
+# tagger = ["*.json", "models/*"] # Example: include json files and files in a models subdir 

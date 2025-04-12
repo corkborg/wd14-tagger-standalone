@@ -1,5 +1,6 @@
-
 forked from [https://github.com/picobyte/stable-diffusion-webui-wd14-tagger](https://github.com/picobyte/stable-diffusion-webui-wd14-tagger)
+
+forked from [https://github.com/corkborg/wd14-tagger-standalone](https://github.com/corkborg/wd14-tagger-standalone)
 
 ## install
 
@@ -91,3 +92,10 @@ https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html#requ
 ## Copyright
 
 Public domain, except borrowed parts (e.g. `dbimutils.py`)
+
+## License
+
+This project is a fork of [corkborg/wd14-tagger-standalone](https://github.com/corkborg/wd14-tagger-standalone).
+The original repository did not contain an explicit license file.
+
+This fork is distributed under the [MIT License](./LICENSE), primarily covering the modifications made herein. Please refer to the original repository for the history prior to the fork.
