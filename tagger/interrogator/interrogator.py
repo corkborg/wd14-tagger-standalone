@@ -118,7 +118,7 @@ class AbsInterrogator:
         
         # Return list of available providers in optimal order
         selected = [p for p in optimal_order if p in available]
-        print(f'Selected optimal providers for {self.name}: {selected}', file=sys.stderr)
+        #print(f'Selected optimal providers for {self.name}: {selected}', file=sys.stderr)
         return selected
 
     def interrogate(
