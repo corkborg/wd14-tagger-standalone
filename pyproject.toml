@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wd14-tagger-standalone"
-version = "0.1.0"
+version = "0.1.1"
 authors = [
   { name="Your Name", email="you@example.com" }, # TODO: Update author details
 ]
