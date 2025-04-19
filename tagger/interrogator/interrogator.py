@@ -6,7 +6,7 @@ import pandas as pd
 from typing import Iterable, Tuple, List, Dict
 from PIL import Image
 
-from onnxruntime import InferenceSession
+from onnxruntime import InferenceSession, get_available_providers
 
 tag_escape_pattern = re.compile(r'([\\()])')
 
@@ -66,7 +66,8 @@ class AbsInterrogator:
 
     def __init__(self, name: str) -> None:
         self.name = name
-        self.providers = ['CUDAExecutionProvider', 'CPUExecutionProvider']
+        # Initialize with optimal provider selection
+        self.providers = self.get_optimal_provider()
 
     def load(self):
         raise NotImplementedError()
@@ -85,7 +86,40 @@ class AbsInterrogator:
         return unloaded
 
     def use_cpu(self) -> None:
+        """Force CPU-only execution."""
         self.providers = ['CPUExecutionProvider']
+        print(f'Forcing CPU execution for {self.name}', file=sys.stderr)
+
+    def get_available_providers(self) -> List[str]:
+        """Get list of available execution providers."""
+        return get_available_providers()
+
+    def set_providers(self, providers: List[str]) -> None:
+        """Set specific execution providers."""
+        self.providers = providers
+        #print(f'Set custom providers for {self.name}: {providers}', file=sys.stderr)
+
+    def get_optimal_provider(self) -> List[str]:
+        """Get the optimal provider based on system capabilities.
+        
+        Returns a list of providers in order of preference:
+        - CoreMLExecutionProvider (if on Apple Silicon)
+        - CUDAExecutionProvider (if NVIDIA GPU available)
+        - CPUExecutionProvider (always available as fallback)
+        """
+        available = self.get_available_providers()
+        
+        # Start with most optimal providers first
+        optimal_order = [
+            'CoreMLExecutionProvider',  # Best for Apple Silicon
+            'CUDAExecutionProvider',    # Best for NVIDIA GPUs
+            'CPUExecutionProvider'      # Fallback
+        ]
+        
+        # Return list of available providers in optimal order
+        selected = [p for p in optimal_order if p in available]
+        #print(f'Selected optimal providers for {self.name}: {selected}', file=sys.stderr)
+        return selected
 
     def interrogate(
         self,
