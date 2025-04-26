@@ -5,11 +5,8 @@ https://huggingface.co/Camais03/camie-tagger/blob/main/onnx_inference.py
 """
 import sys
 import json
-
-from typing import cast
-
 import numpy as np
-import torch
+
 from PIL import Image
 from huggingface_hub import hf_hub_download
 from onnxruntime import InferenceSession
@@ -71,10 +68,19 @@ class CamieTaggerInterrogator(AbsInterrogator):
         if self.model is None:
             raise Exception("Model not loading.")
 
-        img_tensor = preprocess_image(image)
-        img_numpy = img_tensor.unsqueeze(0).numpy()
+        # Use the NumPy preprocessing function
+        # Result is already a NumPy array with shape (C, H, W) and float32 type
+        img_array_chw = preprocess_image(image) # e.g., shape (3, 512, 512)
+
+        # ONNX models typically expect input in NCHW format (Batch, Channel, Height, Width)
+        # Add a batch dimension (N=1) at the beginning
+        img_numpy = np.expand_dims(img_array_chw, axis=0) # Now shape (1, 3, 512, 512)
 
         input_ = self.model.get_inputs()[0]
+
+        # Ensure input data type matches model expectation (usually float32)
+        if input_.type == 'tensor(float)':
+            img_numpy = img_numpy.astype(np.float32)
 
         # evaluate model
         outputs = self.model.run(None, {input_.name: img_numpy})
@@ -100,12 +106,25 @@ class CamieTaggerInterrogator(AbsInterrogator):
             tags_by_category[category].append((tag_name, prob))
 
         # 'year', 'rating', 'general', 'character', 'copyright', 'artist', 'meta'
-        return dict(tags_by_category['rating']), dict(tags_by_category['general'])
+        rating_tags = dict(tags_by_category.get('rating', []))
+        general_tags = dict(tags_by_category.get('general', []))
 
-def preprocess_image(img: Image.Image, image_size=512) -> torch.Tensor:
-    """Process an image for inference"""
+        return rating_tags, general_tags
 
-    # Convert RGBA or Palette images to RGB
+def preprocess_image(img: Image.Image, image_size: int = 512) -> np.ndarray:
+    """
+    Process a PIL image for inference using NumPy.
+
+    Args:
+        img: The input PIL Image.
+        image_size: The target square size (width and height) for the output array.
+
+    Returns:
+        A NumPy array representing the processed image in CHW format,
+        with pixel values scaled to [0.0, 1.0] and dtype float32.
+    """
+
+    # Convert to RGB
     if img.mode in ('RGBA', 'P'):
         img = img.convert('RGB')
 
@@ -130,14 +149,13 @@ def preprocess_image(img: Image.Image, image_size=512) -> torch.Tensor:
     paste_y = (image_size - new_height) // 2
     new_image.paste(img, (paste_x, paste_y))
 
-    import torchvision.transforms as transforms
+    # Convert PIL image to NumPy array (H, W, C) with values 0-255
+    img_array = np.array(new_image, dtype=np.float32)
 
-    # Initialize transform
-    transform = transforms.Compose([
-        transforms.ToTensor(),
-    ])
+    # Scale pixel values from [0, 255] to [0.0, 1.0]
+    img_array /= 255.0
 
-    # Apply transforms
-    img_tensor= transform(new_image)
-    img_tensor = cast(torch.Tensor, img_tensor)
-    return img_tensor
+    # Change dimension order from HWC to CHW
+    img_array = img_array.transpose((2, 0, 1)) # C, H, W
+
+    return img_array
