@@ -2,11 +2,14 @@ import sys
 
 from typing import Generator, Iterable
 from tagger.interrogator.interrogator import AbsInterrogator
-from PIL import Image
+from PIL import Image, ImageFile
 from pathlib import Path
 import argparse
 
 from tagger.interrogators import interrogators
+
+# Allow images with broken headers to load
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 parser = argparse.ArgumentParser()
 
