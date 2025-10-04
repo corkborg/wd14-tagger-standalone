@@ -3,5 +3,7 @@ __pycache__/
 .venv/
 venv/
 .env
+*.egg-info
+*.un~
 
 presets/

@@ -1,5 +1,7 @@
 import os
 import sys
+import logging
+import structlog
 import pandas as pd
 import numpy as np
 
@@ -15,6 +17,8 @@ tag_escape_pattern = re.compile(r'([\\()])')
 from tagger.interrogator.interrogator import AbsInterrogator
 import tagger.dbimutils as dbimutils
 
+logger = structlog.get_logger(__name__)
+
 class WaifuDiffusionInterrogator(AbsInterrogator):
     def __init__(
         self,
@@ -29,7 +33,8 @@ class WaifuDiffusionInterrogator(AbsInterrogator):
         self.kwargs = kwargs
 
     def download(self) -> Tuple[os.PathLike, os.PathLike]:
-        print(f"Loading {self.name} model file from {self.kwargs['repo_id']}", file=sys.stderr)
+        if not self.quiet:
+            logger.info("Loading model file", model=self.name, repo_id=self.kwargs['repo_id'])
 
         model_path = Path(hf_hub_download(
             **self.kwargs, filename=self.model_path))
@@ -43,7 +48,8 @@ class WaifuDiffusionInterrogator(AbsInterrogator):
         from onnxruntime import InferenceSession
         self.model = InferenceSession(str(model_path), providers=self.providers)
 
-        print(f'Loaded {self.name} model from {model_path}', file=sys.stderr)
+        if not self.quiet:
+            logger.info("Model loaded", model=self.name, path=str(model_path))
 
         self.tags = pd.read_csv(tags_path)
 

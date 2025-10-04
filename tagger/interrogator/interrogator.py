@@ -1,5 +1,7 @@
 import re
 import sys
+import logging
+import structlog
 
 import pandas as pd
 
@@ -8,6 +10,7 @@ from PIL import Image
 
 from onnxruntime import InferenceSession, get_available_providers
 
+logger = structlog.get_logger(__name__)
 tag_escape_pattern = re.compile(r'([\\()])')
 
 class AbsInterrogator:
@@ -66,8 +69,11 @@ class AbsInterrogator:
 
     def __init__(self, name: str) -> None:
         self.name = name
-        # Initialize with optimal provider selection
-        self.providers = self.get_optimal_provider()
+        self.providers = ['CUDAExecutionProvider', 'CPUExecutionProvider']
+        self.quiet = False
+
+    def set_quiet(self, quiet: bool) -> None:
+        self.quiet = quiet
 
     def load(self):
         raise NotImplementedError()
@@ -78,7 +84,8 @@ class AbsInterrogator:
         if hasattr(self, 'model') and self.model is not None:
             del self.model
             unloaded = True
-            print(f'Unloaded {self.name}', file=sys.stderr)
+            if not self.quiet:
+                logger.info("Model unloaded", model=self.name)
 
         if hasattr(self, 'tags'):
             del self.tags
@@ -88,7 +95,7 @@ class AbsInterrogator:
     def use_cpu(self) -> None:
         """Force CPU-only execution."""
         self.providers = ['CPUExecutionProvider']
-        print(f'Forcing CPU execution for {self.name}', file=sys.stderr)
+        logger.info("Forcing CPU execution", model=self.name)
 
     def get_available_providers(self) -> List[str]:
         """Get list of available execution providers."""
