@@ -1,8 +1,7 @@
-numpy==2.2.2
-pandas==2.2.3
-Pillow==11.1.0
-huggingface-hub==0.28.1
-deepdanbooru==1.0.3
-onnxruntime==1.20.1
-opencv-python==4.11.0.86
-
+numpy==2.5.4
+pandas==3.1.1
+Pillow==13.0.0
+huggingface-hub==2.4.0
+deepdanbooru==1.0.4
+onnxruntime==1.32.0
+opencv-python==5.0.0.93
